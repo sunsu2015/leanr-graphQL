@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="datas()">获取数据</button>
+    <button onclick="insertData()">插入数据</button>
+</body>
+<script>
+    function getData() {
+        const query = `query Account($username: String, $city: String) {
+            account(username: $username) {
+                name
+                age
+                sex
+                salary(city: $city)
+            }
+        }`;
+        const variables = {username: '李四', city: '北京'};
+        fetch('/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                query,
+                variables
+            })
+        })
+        .then(r => r.json())
+        .then(data => console.log(data));
+    }
+    function datas() {
+        const query = `query Accounts {
+            accounts {
+                name
+                age
+                sex
+                department
+            }
+        }`;
+        fetch('/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                query
+            })
+        })
+        .then(r => r.json())
+        .then(data => console.log(data));
+    }
+    function insertData() {
+        const query = `mutation CreateAccount($input: AccountInput!) {
+            createAccount(input: $input) {
+                name
+                age
+                sex
+                department
+            }
+        }`;
+        const variables = {input: {
+            name: '王五',
+            age: 23,
+            sex: '男',
+            department: '设计'
+        }};
+        fetch('/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                query,
+                variables
+            })
+        })
+        .then(r => r.json())
+        .then(data => console.log(data));
+    }
+</script>
+</html>
